@@ -25,10 +25,10 @@ const routes: RouteRecordRaw[] = [
       },
       {
         meta: {
-          title: 'test',
+          title: 'Graphql',
         },
-        path: '/demos/ant-design-test',
-        component: () => import('#/views/demos/antd/test.vue'),
+        path: '/demos/gql',
+        component: () => import('#/views/demos/antd/gql.vue'),
       },
     ],
   },
