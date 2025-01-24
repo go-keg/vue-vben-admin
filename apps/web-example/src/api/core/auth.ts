@@ -1,51 +1,80 @@
-import { baseRequestClient, requestClient } from '#/api/request';
+import { requestClient } from '#/api/request';
+import { gql } from '@urql/vue';
 
-export namespace AuthApi {
-  /** 登录接口参数 */
-  export interface LoginParams {
-    password?: string;
-    username?: string;
+const USER_INFO_FRAGMENT = gql`
+  fragment UserInfoFragment on User {
+    id
+    email
+    nickname
+    avatar
+    roles {
+      id
+      name
+    }
+    permissions {
+      key
+      name
+      attrs
+    }
   }
+`;
 
-  /** 登录接口返回值 */
-  export interface LoginResult {
-    accessToken: string;
+const TOKEN_FRAGMENT = gql`
+  fragment TokenFragment on LoginReply {
+    token
+    exp
+    user {
+      ...UserInfoFragment
+    }
   }
-
-  export interface RefreshTokenResult {
-    data: string;
-    status: number;
-  }
-}
+  ${USER_INFO_FRAGMENT}
+`;
 
 /**
  * 登录
  */
-export async function loginApi(data: AuthApi.LoginParams) {
-  return requestClient.post<AuthApi.LoginResult>('/auth/login', data);
+export async function loginApi(email: string, password: string) {
+  return requestClient.query(
+    gql`
+    query login($email: String!, $password: String!) {
+      login(email: $email, password: $password) {
+        ...TokenFragment
+      }
+      ${TOKEN_FRAGMENT}
+    }
+  `,
+    { email, password },
+  );
 }
 
 /**
  * 刷新accessToken
  */
 export async function refreshTokenApi() {
-  return baseRequestClient.post<AuthApi.RefreshTokenResult>('/auth/refresh', {
-    withCredentials: true,
-  });
+  return requestClient.query(
+    gql`
+  query refreshToken {
+    refresh {
+      ...TokenFragment
+    }
+    ${TOKEN_FRAGMENT}
+  }`,
+    {},
+  );
 }
 
 /**
- * 退出登录
+ * 获取个人信息
  */
-export async function logoutApi() {
-  return baseRequestClient.post('/auth/logout', {
-    withCredentials: true,
-  });
-}
-
-/**
- * 获取用户权限码
- */
-export async function getAccessCodesApi() {
-  return requestClient.get<string[]>('/auth/codes');
+export async function profileApi() {
+  return requestClient.query(
+    gql`
+    query profile {
+      profile {
+        ...UserInfoFragment
+      }
+      ${USER_INFO_FRAGMENT}
+    }`,
+    {},
+  );
 }

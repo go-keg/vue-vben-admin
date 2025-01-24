@@ -35,12 +35,6 @@ const quickNavItems: WorkbenchQuickNavItem[] = [
     title: '首页',
     url: '/',
   },
-  {
-    color: '#bf0c2c',
-    icon: 'ion:grid-outline',
-    title: '仪表盘',
-    url: '/dashboard',
-  },
 ];
 
 const todoItems = ref<WorkbenchTodoItem[]>([

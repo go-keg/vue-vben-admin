@@ -1,82 +1,97 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { computed, ref, watch, onMounted } from 'vue';
 import { Page } from '@vben/common-ui';
 import { gql, useQuery } from '@urql/vue';
 import type { UserWhereInput } from '#/gql/graphql';
-import { InputSearch, Table, Select } from 'ant-design-vue';
 
 const where = ref<UserWhereInput>({});
-const first = ref(10);
+
+const pagination = ref({
+  current: 1,
+  pageSize: 10,
+  total: 0,
+  showSizeChanger: true, // 显示 pageSize 切换器
+  pageSizeOptions: ['5', '10', '20', '50', '100'], // 可选的 pageSize
+});
+
+const variables = computed(() => ({
+  where: where.value,
+  offset: (pagination.value.current - 1) * pagination.value.pageSize,
+  limit: pagination.value.pageSize,
+}));
 
 const { data, fetching, executeQuery, error } = useQuery({
   query: gql`
-    query users($first: Int!, $where: UserWhereInput!) {
-      users(first: $first, where: $where) {
+    query users($offset: Int!, $limit: Int!, $where: UserWhereInput!) {
+      userList(offset: $offset, limit: $limit, where: $where) {
+        totalCount
         nodes {
           id
           nickname
           email
+          avatar
+          isAdmin
+          roleCount
+          roles {
+            id
+            name
+          }
+          status
         }
       }
     }
   `,
-  variables: { where, first },
+  variables,
   pause: true,
 });
 
-const columns = [
-  {
-    title: 'ID',
-    dataIndex: 'id',
-    width: '20%',
-  },
-  {
-    title: 'Name',
-    dataIndex: 'nickname',
-    width: '20%',
-  },
-  {
-    title: 'Email',
-    dataIndex: 'email',
-  },
-];
+watch(data, (newValue, oldValue) => {
+  if (newValue?.userList?.totalCount !== oldValue?.userList?.totalCount) {
+    pagination.value.total = newValue?.userList?.totalCount || 0;
+  }
+});
 
 const handleSubmit = async () => {
+  pagination.value.current = 1;
   await executeQuery({ requestPolicy: 'network-only' });
 };
+
+const handleTableChange = (pag: any) => {
+  pagination.value.current = pag.current ?? 1;
+  pagination.value.pageSize = pag.pageSize ?? 10;
+  executeQuery({ requestPolicy: 'network-only' });
+};
+
+onMounted(() => {
+  executeQuery({ requestPolicy: 'network-only' });
+});
 </script>
 
 <template>
-  <div>
-    <Page
-      description="支持多语言，主题功能集成切换等"
-      title="Ant Design Vue组件使用演示"
-    />
-    <p v-if="error">Error: {{ error.message }}</p>
-    <InputSearch
-      style="width: 200px"
-      v-model:value="where.nicknameContains"
-      placeholder="Search..."
-      @search="handleSubmit"
-    />
-    <Table
-      :columns="columns"
-      :row-key="(record) => record.id"
-      :data-source="data?.users?.nodes"
+  <Page
+    description="支持多语言，主题功能集成切换等"
+    title="Ant Design Vue组件使用演示"
+  >
+    <div style="margin-bottom: 1rem">
+      <a-input-search
+        style="width: 200px"
+        v-model:value="where.nicknameContains"
+        placeholder="Search..."
+        @search="handleSubmit"
+      />
+    </div>
+    <div v-if="fetching">loading...</div>
+    <div v-else-if="error">Error: {{ error.message }}</div>
+    <a-table
+      :row-key="(record: any) => record.id"
+      :data-source="data?.userList?.nodes"
       :loading="fetching"
-      @change="handleSubmit"
+      :pagination="pagination"
+      @change="handleTableChange"
     >
-    </Table>
-    <Select
-      v-model:value="first"
-      :options="[
-        { value: 10, label: '10 / page' },
-        { value: 20, label: '20 / page' },
-        { value: 30, label: '30 / page' },
-        { value: 50, label: '50 / page' },
-      ]"
-      placeholder="Please select"
-      style="width: 200px"
-    ></Select>
-  </div>
+      <a-table-column title="ID" dataIndex="id" />
+      <a-table-column title="Name" dataIndex="nickname" />
+      <a-table-column title="Email" dataIndex="email" />
+    </a-table>
+  </Page>
 </template>

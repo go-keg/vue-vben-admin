@@ -11,6 +11,8 @@ import { useTitle } from '@vueuse/core';
 import { $t, setupI18n } from '#/locales';
 
 import { initComponentAdapter } from './adapter/component';
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/reset.css';
 import App from './app.vue';
 import { router } from './router';
 
@@ -33,6 +35,9 @@ async function bootstrap(namespace: string) {
 
   // 配置路由及路由守卫
   app.use(router);
+
+  // 全局引入 Ant Design Vue
+  app.use(Antd);
 
   app.use(urql, {
     url: 'http://localhost:5666/query',

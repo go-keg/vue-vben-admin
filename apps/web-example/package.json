@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@parcel/watcher": "^2.5.0",
+    "@urql/exchange-auth": "^2.2.0",
     "@urql/vue": "^1.4.2",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",

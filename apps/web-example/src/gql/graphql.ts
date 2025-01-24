@@ -1,4 +1,5 @@
 /* eslint-disable */
+import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -560,15 +561,21 @@ export type Query = {
   /** 操作日志 */
   operationLogs: OperationLogConnection;
   /** 权限 */
+  permissionList: PermissionConnection;
+  /** 权限 */
   permissions: PermissionConnection;
   /** 个人信息 */
   profile: User;
   /** 刷新token */
   refresh: LoginReply;
   /** 角色 */
+  roleList: RoleConnection;
+  /** 角色 */
   roles: RoleConnection;
   /** 发送验证码 */
   sendVerifyCode: Scalars['Boolean']['output'];
+  /** 用户 */
+  userList: UserConnection;
   /** 用户 */
   users: UserConnection;
 };
@@ -597,6 +604,13 @@ export type QueryOperationLogsArgs = {
   where?: InputMaybe<OperationLogWhereInput>;
 };
 
+export type QueryPermissionListArgs = {
+  limit?: Scalars['Int']['input'];
+  offset?: Scalars['Int']['input'];
+  orderBy?: InputMaybe<PermissionOrder>;
+  where?: InputMaybe<PermissionWhereInput>;
+};
+
 export type QueryPermissionsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -604,6 +618,13 @@ export type QueryPermissionsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<PermissionOrder>;
   where?: InputMaybe<PermissionWhereInput>;
+};
+
+export type QueryRoleListArgs = {
+  limit?: Scalars['Int']['input'];
+  offset?: Scalars['Int']['input'];
+  orderBy?: InputMaybe<RoleOrder>;
+  where?: InputMaybe<RoleWhereInput>;
 };
 
 export type QueryRolesArgs = {
@@ -618,6 +639,13 @@ export type QueryRolesArgs = {
 export type QuerySendVerifyCodeArgs = {
   email: Scalars['String']['input'];
   verifyType: VerifyCodeType;
+};
+
+export type QueryUserListArgs = {
+  limit?: Scalars['Int']['input'];
+  offset?: Scalars['Int']['input'];
+  orderBy?: InputMaybe<UserOrder>;
+  where?: InputMaybe<UserWhereInput>;
 };
 
 export type QueryUsersArgs = {
@@ -983,3 +1011,166 @@ export enum VerifyCodeType {
   /** 注册验证 */
   Register = 'Register',
 }
+
+export type UsersQueryVariables = Exact<{
+  offset: Scalars['Int']['input'];
+  limit: Scalars['Int']['input'];
+  where: UserWhereInput;
+}>;
+
+export type UsersQuery = {
+  __typename?: 'Query';
+  userList: {
+    __typename?: 'UserConnection';
+    totalCount: number;
+    nodes?: Array<{
+      __typename?: 'User';
+      id: string;
+      nickname: string;
+      email: string;
+      avatar?: string | null;
+      isAdmin: boolean;
+      roleCount: number;
+      status: UserStatus;
+      roles?: Array<{ __typename?: 'Role'; id: string; name: string }> | null;
+    } | null> | null;
+  };
+};
+
+export const UsersDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'users' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'offset' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'limit' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'where' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'UserWhereInput' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'userList' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'offset' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'offset' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'limit' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'limit' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'where' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'where' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'totalCount' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'nodes' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'nickname' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'avatar' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'isAdmin' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'roleCount' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'roles' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'status' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UsersQuery, UsersQueryVariables>;

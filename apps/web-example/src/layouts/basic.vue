@@ -63,8 +63,7 @@ watch(
         :avatar
         :menus
         :text="userStore.userInfo?.realName"
-        description="eiixyw@gmail.com"
-        tag-text="Pro"
+        :description="userStore.userInfo?.email"
         @logout="handleLogout"
       />
     </template>

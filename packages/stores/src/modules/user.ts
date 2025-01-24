@@ -19,9 +19,9 @@ interface BasicUserInfo {
    */
   userId: string;
   /**
-   * 用户名
+   * 邮箱
    */
-  username: string;
+  email: string;
 }
 
 interface AccessState {

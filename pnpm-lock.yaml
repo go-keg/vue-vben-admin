@@ -601,6 +601,9 @@ importers:
       '@parcel/watcher':
         specifier: ^2.5.0
         version: 2.5.0
+      '@urql/exchange-auth':
+        specifier: ^2.2.0
+        version: 2.2.0(@urql/core@5.1.0(graphql@16.10.0))
       '@urql/vue':
         specifier: ^1.4.2
         version: 1.4.2(@urql/core@5.1.0(graphql@16.10.0))(vue@3.5.13(typescript@5.7.2))
@@ -4464,6 +4467,11 @@ packages:
 
   '@urql/core@5.1.0':
     resolution: {integrity: sha512-yC3sw8yqjbX45GbXxfiBY8GLYCiyW/hLBbQF9l3TJrv4ro00Y0ChkKaD9I2KntRxAVm9IYBqh0awX8fwWAe/Yw==}
+
+  '@urql/exchange-auth@2.2.0':
+    resolution: {integrity: sha512-4bJR22EYa/flbhwMBj4lU8MI4cO3ddo/DX7FygWeaeHZU+RWfnQKifCKwxIYlnoV8/CgYRM4lFSMIByYlhmWcg==}
+    peerDependencies:
+      '@urql/core': ^5.0.0
 
   '@urql/vue@1.4.2':
     resolution: {integrity: sha512-ELMlVhWsVPaKyIgocNA2eAxSZgwzBqaw5YB4q3wQTAExxGlx6UNVluiBnuDLhs5ctSDIrGBR6Dfkwl6+M3B0QQ==}
@@ -13784,6 +13792,11 @@ snapshots:
       wonka: 6.3.4
     transitivePeerDependencies:
       - graphql
+
+  '@urql/exchange-auth@2.2.0(@urql/core@5.1.0(graphql@16.10.0))':
+    dependencies:
+      '@urql/core': 5.1.0(graphql@16.10.0)
+      wonka: 6.3.4
 
   '@urql/vue@1.4.2(@urql/core@5.1.0(graphql@16.10.0))(vue@3.5.13(typescript@5.7.2))':
     dependencies:
